@@ -6,8 +6,8 @@ namespace Truck_DataAccess.Entities
     {
        
         public string Ratio { get; set; }
-        public string MaxTorque { get; set; }
-        public string MaxSpeed { get; set; }
-        public string MaxTemp { get; set; }
+        public int MaxTorque { get; set; }
+        public int MaxSpeed { get; set; }
+        public int MaxTemp { get; set; }
     }
 }

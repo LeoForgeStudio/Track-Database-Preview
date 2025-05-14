@@ -8,13 +8,13 @@ using Truck_DataAccess.Entities;
 
 namespace Truck_DataAccess.Repositories
 {
-    public interface IRepository
+    public interface IRepository<TEntity, Tfilter>
     {
-        Task CreateAsync(Truck item);
-        Task<Truck?> GetAsync(string id);
-        Task<List<Truck>> GetListAsync();
-        Task<List<Truck>> GetListAsync(TruckFilter args);
-        Task UpdateAsync(Truck item);
+        Task CreateAsync(TEntity item);
+        Task<TEntity?> GetAsync(string id);
+        Task<List<TEntity>> GetListAsync();
+        Task<List<TEntity>> GetListAsync(Tfilter args);
+        Task UpdateAsync(TEntity item);
         Task DeleteAsync(ObjectId id);
     }
 }
