@@ -5,7 +5,7 @@ using Truck_DataAccess.Entities;
 
 namespace Truck_DataAccess.Repositories
 {
-    public class TruckRepository : IRepository
+    public class TruckRepository : IRepository<Truck, TruckFilter>
     {
         private readonly IMongoCollection<Truck> _collection;
 
