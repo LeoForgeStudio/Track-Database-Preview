@@ -1,6 +1,4 @@
-﻿
-
-namespace Truck_DataAccess.Enums
+﻿namespace Truck_Shared.Enums
 {
     public enum Condition
     {

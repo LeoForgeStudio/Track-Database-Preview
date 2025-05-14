@@ -8,6 +8,8 @@ namespace Truck_DataAccess.Entities
     {
         [BsonId]
         public ObjectId Id { get; set; }
+
+        [BsonElement("Model")]
         public string Model { get; set; }
     }
 }

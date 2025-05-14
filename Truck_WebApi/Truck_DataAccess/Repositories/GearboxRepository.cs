@@ -9,7 +9,7 @@ using Truck_DataAccess.Entities;
 
 namespace Truck_DataAccess.Repositories
 {
-    internal class GearboxRepository : IRepository<Gearbox, GearboxFilter>
+    public class GearboxRepository : IRepository<Gearbox, GearboxFilter>
     {
         private readonly IMongoCollection<Gearbox> _collection;
 

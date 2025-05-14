@@ -1,8 +1,6 @@
-﻿
-
-namespace Truck_DataAccess.Entities
+﻿namespace Truck_Shared.Dto
 {
-    public class Dimentions
+    public class DimentionsDto
     {
         public int Length { get; set; }
         public int Height { get; set; }

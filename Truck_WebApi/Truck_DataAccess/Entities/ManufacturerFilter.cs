@@ -1,6 +1,6 @@
 ﻿namespace Truck_DataAccess.Entities
 {
-    public class Manufacturer : BaseEntity
+    public class ManufacturerFilter
     {
         public string Name { get; set; }
     }

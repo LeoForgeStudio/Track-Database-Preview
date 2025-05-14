@@ -9,7 +9,7 @@ using Truck_DataAccess.Entities;
 
 namespace Truck_DataAccess.Repositories
 {
-    internal class EngineRepository : IRepository<Engine,EngineFilter>
+    public class EngineRepository : IRepository<Engine,EngineFilter>
     {
         private readonly IMongoCollection<Engine> _collection;
 
