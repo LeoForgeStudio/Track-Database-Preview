@@ -1,4 +1,9 @@
 
+using MongoDB.Driver;
+using Truck_BusnessLogic.Services;
+using Truck_DataAccess.Entities;
+using Truck_DataAccess.Repositories;
+
 namespace Truck_WebApi
 {
     public class Program
@@ -8,6 +13,17 @@ namespace Truck_WebApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddSingleton<IMongoClient, MongoClient>(sp =>
+            {
+                return new MongoClient(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            builder.Services.AddScoped<IRepository<Truck, TruckFilter>, TruckRepository>();
+            builder.Services.AddScoped<IRepository<Gearbox, GearboxFilter>, GearboxRepository>();
+            builder.Services.AddScoped<IRepository<Engine, EngineFilter>, EngineRepository>();
+            builder.Services.AddScoped<IRepository<Manufacturer, ManufacturerFilter>, ManufacturerRepository>();
+            builder.Services.AddScoped<ITruckService, TruckService>();
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

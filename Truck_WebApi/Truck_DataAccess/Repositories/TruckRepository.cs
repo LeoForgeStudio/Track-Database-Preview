@@ -54,9 +54,9 @@ namespace Truck_DataAccess.Repositories
                 .Filter;
             var filters = new List<FilterDefinition<Truck>>();
 
-            if (!string.IsNullOrWhiteSpace(args.Manufacturer.Name))
+            if (!string.IsNullOrWhiteSpace(args.Manufacturer))
             {
-                var nameFilter = builder.Eq(item => item.Manufacturer.Name, args.Manufacturer.Name);
+                var nameFilter = builder.Eq(item => item.Manufacturer, args.Manufacturer);
                 filters.Add(nameFilter);
 
             }

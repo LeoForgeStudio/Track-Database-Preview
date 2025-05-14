@@ -1,24 +1,32 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Truck_DataAccess.Enums;
+using Truck_Shared.Enums;
+using Truck_Shared.Dto;
 
 namespace Truck_DataAccess.Entities
 {
     public class Truck : BaseEntity
     {
-        
-        public Manufacturer Manufacturer { get; set; }
-        public string Model { get; set; }
+        [BsonElement("Manufacturer")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Manufacturer { get; set; }
+
+        [BsonElement("ConstructDate")]
         public DateOnly ConstructDate { get; set; }
-        public Condition Condition { get; set; } 
+
+        [BsonElement("Condition")]
+        public Condition Condition { get; set; }
+
+        [BsonElement("TechnicalData")]
         public required TechnicalData TechnicalData { get; set; }
+
+        [BsonElement("Price")]
         public int Price { get; set; }
+
+        [BsonElement("Location")]
         public string Location { get; set; }
+
+        [BsonElement("Description")]
         public string Description { get; set; }
     }
 }

@@ -1,17 +1,22 @@
-﻿
-using Truck_DataAccess.Enums;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using Truck_Shared.Dto;
+using Truck_Shared.Enums;
 
 namespace Truck_DataAccess.Entities
 {
     public class TechnicalData
     {
-        public Engine Engine { get; set; }
-        public Gearbox Gearbox { get; set; }
-        public string Weight { get; set; }
-        public FuelType Name { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Engine { get; set; }
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Gearbox { get; set; }
+        public int Weight { get; set; }
+        public FuelType FuelType { get; set; }
         public string Color { get; set; }
         public int Axle { get; set; }
-        public Dimentions Dimentions { get; set; }
+        public DimentionsDto Dimentions { get; set; }
         public int WheelBase { get; set; }
         public EmissionClass EmissionClass { get; set; }
     }

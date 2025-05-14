@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Truck_DataAccess\Truck_DataAccess.csproj" />
+    <ProjectReference Include="..\Truck_Shared\Truck_Shared.csproj" />
+  </ItemGroup>
+
 </Project>

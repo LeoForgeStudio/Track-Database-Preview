@@ -1,16 +1,11 @@
-﻿using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Truck_DataAccess.Enums;
+﻿using Truck_Shared.Enums;
+using Truck_Shared.Dto;
 
 namespace Truck_DataAccess.Entities
 {
      public class TruckFilter
     {
-        public Manufacturer? Manufacturer { get; set; }
+        public string? Manufacturer { get; set; }
         public string? Model { get; set; }
         public DateOnly? ConstructFrom { get; set; }
         public DateOnly? ConstructTo { get; set; }
