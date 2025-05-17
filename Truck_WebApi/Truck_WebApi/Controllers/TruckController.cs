@@ -4,13 +4,11 @@ using Truck_BusnessLogic.Services;
 using Truck_Shared.Dto;
 using Truck_Shared.Entities;
 
-
-
 namespace Truck_WebApi.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    [Authorize("")]
+    
     public class TruckController : Controller
     {
         private readonly ITruckService _service;
@@ -28,7 +26,6 @@ namespace Truck_WebApi.Controllers
             return StatusCode(result.ResponseCode, result);
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<ServerResult<List<TruckDto>>>> GetListAsync()
         {
