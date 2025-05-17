@@ -1,8 +1,11 @@
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Truck_BusnessLogic.Services;
 using Truck_DataAccess.Entities;
 using Truck_DataAccess.Repositories;
+
 
 namespace Truck_WebApi
 {
@@ -17,18 +20,58 @@ namespace Truck_WebApi
             {
                 return new MongoClient(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-
+            
             builder.Services.AddScoped<IRepository<Truck, TruckFilter>, TruckRepository>();
             builder.Services.AddScoped<IRepository<Gearbox, GearboxFilter>, GearboxRepository>();
             builder.Services.AddScoped<IRepository<Engine, EngineFilter>, EngineRepository>();
             builder.Services.AddScoped<IRepository<Manufacturer, ManufacturerFilter>, ManufacturerRepository>();
-            builder.Services.AddScoped<ITruckService, TruckService>();
+            builder.Services.AddTransient<IUserRepository, UserRepository>();
 
+            builder.Services.AddTransient<ITruckService, TruckService>();
+            builder.Services.AddTransient<IUserService, UserService>();
+
+            builder.Services.AddAuthentication("BaseAuth")
+                .AddScheme<AuthenticationSchemeOptions, DummyAuthHandler>("BaseAuth", null);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Truck Api",
+                    Version = "v1",
+                    Description = "Truck database entity Crud metods",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Liutauras Cicinskas",
+                        Email = "twinpiligrim@gmail.com",
+                    }
+                });
+                options.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic auth header"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basic"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
 
             var app = builder.Build();
 
@@ -41,8 +84,11 @@ namespace Truck_WebApi
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
+            app.UseMiddleware<BaseAuthMiddleware>();
+
+            app.UseAuthorization();
 
             app.MapControllers();
 
