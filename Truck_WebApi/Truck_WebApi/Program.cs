@@ -1,4 +1,5 @@
 
+using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Truck_BusnessLogic.Services;
 using Truck_DataAccess.Entities;
@@ -28,7 +29,21 @@ namespace Truck_WebApi
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Truck Api",
+                    Version = "v1",
+                    Description = "Truck database entity Crud metods",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Liutauras Cicinskas",
+                        Email = "twinpiligrim@gmail.com",
+                    }
+
+                });
+            });
 
             var app = builder.Build();
 

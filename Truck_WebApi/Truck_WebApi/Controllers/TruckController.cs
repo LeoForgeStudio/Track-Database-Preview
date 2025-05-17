@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Truck_BusnessLogic.Services;
 using Truck_Shared.Dto;
 using Truck_Shared.Entities;
@@ -9,6 +10,7 @@ namespace Truck_WebApi.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
+    [Authorize("")]
     public class TruckController : Controller
     {
         private readonly ITruckService _service;
@@ -18,6 +20,15 @@ namespace Truck_WebApi.Controllers
             _service = service;
         }
 
+        [HttpGet("{id}")]
+
+        public async Task<ActionResult<ServerResult<TruckDto?>>> GetByIdAsync(string id)
+        {
+            var result = await _service.GetByIdAsync(id);
+            return StatusCode(result.ResponseCode, result);
+        }
+
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<ServerResult<List<TruckDto>>>> GetListAsync()
         {
