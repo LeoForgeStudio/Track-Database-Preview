@@ -28,7 +28,11 @@ namespace Truck_DataAccess.Repositories
             var filter = Builders<Gearbox>
                 .Filter
                 .Eq(item => item.Id, id);
-            var result = _collection.DeleteOneAsync(filter);
+            var result = await _collection.DeleteOneAsync(filter);
+            if (result.DeletedCount == 0)
+            {
+                throw new InvalidOperationException("Gearbox not found or already deleted.");
+            }
         }
 
         public async Task<Gearbox?> GetByIdAsync(string id)

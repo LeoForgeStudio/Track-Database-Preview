@@ -28,7 +28,11 @@ namespace Truck_DataAccess.Repositories
             var filter = Builders<Engine>
                 .Filter
                 .Eq(item => item.Id, id);
-            var result = _collection.DeleteOneAsync(filter);
+            var result = await _collection.DeleteOneAsync(filter);
+            if (result.DeletedCount == 0)
+            {
+                throw new InvalidOperationException("Engine not found or already deleted.");
+            }
         }
 
         public async Task<Engine?> GetByIdAsync(string id)
