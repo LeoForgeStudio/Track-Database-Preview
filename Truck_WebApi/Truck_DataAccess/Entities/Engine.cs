@@ -6,12 +6,12 @@ namespace Truck_DataAccess.Entities
     public class Engine : BaseEntity
     {
         [BsonElement("Cilinders")]
-        public int Cilinders { get; set; }
+        public int? Cilinders { get; set; }
 
         [BsonElement("Power")]
-        public int Power { get; set; }
+        public int? Power { get; set; }
 
         [BsonElement("MaxTorque")]
-        public int MaxTorque { get; set; }
+        public int? MaxTorque { get; set; }
     }
 }

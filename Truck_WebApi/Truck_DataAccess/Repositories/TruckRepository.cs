@@ -142,7 +142,11 @@ namespace Truck_DataAccess.Repositories
             var filter = Builders<Truck>
                 .Filter
                 .Eq(item => item.Id, id);
-            var result = _collection.DeleteOneAsync(filter);
+            var result = await _collection.DeleteOneAsync(filter);
+            if (result.DeletedCount == 0)
+            {
+                throw new InvalidOperationException("Truck not found or already deleted.");
+            }
         }
     }
 }

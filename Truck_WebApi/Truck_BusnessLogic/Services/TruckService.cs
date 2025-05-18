@@ -89,7 +89,7 @@ namespace Truck_BusnessLogic.Services
             };
         }
 
-        public async Task<ServerResult<TruckDto>> GetByIdAsync(string id)
+        public async Task<ServerResult<TruckDto?>> GetByIdAsync(string id)
         {
             
             var result = await _truckRepository.GetByIdAsync(id);
@@ -133,76 +133,115 @@ namespace Truck_BusnessLogic.Services
             return result;
         }
 
-        public async Task<ServerResult<TruckDto>> UpdateAsync(string id, TruckDto dto)
+        public async Task<ServerResult<TruckDto>> UpdateAsync(string id, TruckDto item)
         {
-            var entity = await _truckRepository.GetByIdAsync(id);
-            if (entity == null)
+            try
+            {
+                var entity = await _truckRepository.GetByIdAsync(id);
+                if (entity == null)
+                {
+                    return new ServerResult<TruckDto>
+                    {
+                        Success = false,
+                        Message = "Truck not found",
+                        ResponseCode = 404,
+                        Data = null
+                    };
+                }
+
+                item.Id = entity.Id.ToString();
+                item.Model = string.IsNullOrWhiteSpace(item.Model) ? entity.Model : item.Model;
+                item.Manufacturer = string.IsNullOrWhiteSpace(item.Manufacturer) ? entity.Manufacturer : item.Manufacturer;
+
+                if (item.ConstructDate != default && item.ConstructDate != entity.ConstructDate)
+                {
+                    entity.ConstructDate = item.ConstructDate;
+                }
+
+                item.Condition = item.Condition == 0 ? entity.Condition : item.Condition;
+                item.Price = item.Price == 0 ? entity.Price : item.Price;
+                item.Location = string.IsNullOrWhiteSpace(item.Location) ? entity.Location : item.Location;
+                item.Description = string.IsNullOrWhiteSpace(item.Description) ? entity.Description : item.Description;
+
+                var td = item.TechnicalData;
+                var et = entity.TechnicalData;
+
+                td.Engine = string.IsNullOrWhiteSpace(td.Engine) ? et.Engine : td.Engine;
+                td.Gearbox = string.IsNullOrWhiteSpace(td.Gearbox) ? et.Gearbox : td.Gearbox;
+                td.Weight = td.Weight == 0 ? et.Weight : td.Weight;
+                td.FuelType = td.FuelType == 0 ? et.FuelType : td.FuelType;
+                td.Color = string.IsNullOrWhiteSpace(td.Color) ? et.Color : td.Color;
+                td.Axle = td.Axle == 0 ? et.Axle : td.Axle;
+                td.WheelBase = td.WheelBase == 0 ? et.WheelBase : td.WheelBase;
+                td.EmissionClass = td.EmissionClass == 0 ? et.EmissionClass : td.EmissionClass;
+
+                if (td.Dimentions != null && et.Dimentions != null)
+                {
+                    td.Dimentions.Length = td.Dimentions.Length == 0 ? et.Dimentions.Length : td.Dimentions.Length;
+                    td.Dimentions.Width = td.Dimentions.Width == 0 ? et.Dimentions.Width : td.Dimentions.Width;
+                    td.Dimentions.Height = td.Dimentions.Height == 0 ? et.Dimentions.Height : td.Dimentions.Height;
+                }
+
+                var updatedEntity = Map(item);
+                await _truckRepository.UpdateAsync(updatedEntity);
+
+                var updatedDto = await MapAsync(updatedEntity);
+
+                return new ServerResult<TruckDto>
+                {
+                    Success = true,
+                    Message = "Truck updated successfully",
+                    ResponseCode = 200,
+                    Data = updatedDto
+                };
+            }
+            catch (Exception ex)
             {
                 return new ServerResult<TruckDto>
                 {
                     Success = false,
-                    Message = "Truck not found",
-                    ResponseCode = 404,
+                    Message = $"Unexpected error: {ex.Message}",
+                    ResponseCode = 500,
                     Data = null
                 };
             }
-
-            dto.Id = entity.Id.ToString();
-            dto.Model = string.IsNullOrWhiteSpace(dto.Model) ? entity.Model : dto.Model;
-            dto.Manufacturer = string.IsNullOrWhiteSpace(dto.Manufacturer) ? entity.Manufacturer : dto.Manufacturer;
-            if (dto.ConstructDate != default && dto.ConstructDate != entity.ConstructDate)
-            {
-                entity.ConstructDate = dto.ConstructDate;
-            }
-            dto.Condition = dto.Condition == 0 ? entity.Condition : dto.Condition;
-            dto.Price = dto.Price == 0 ? entity.Price : dto.Price;
-            dto.Location = string.IsNullOrWhiteSpace(dto.Location) ? entity.Location : dto.Location;
-            dto.Description = string.IsNullOrWhiteSpace(dto.Description) ? entity.Description : dto.Description;
-
-            var td = dto.TechnicalData;
-            var et = entity.TechnicalData;
-
-            td.Engine = string.IsNullOrWhiteSpace(td.Engine) ? et.Engine : td.Engine;
-            td.Gearbox = string.IsNullOrWhiteSpace(td.Gearbox) ? et.Gearbox : td.Gearbox;
-            td.Weight = td.Weight == 0 ? et.Weight : td.Weight;
-            td.FuelType = td.FuelType == 0 ? et.FuelType : td.FuelType;
-            td.Color = string.IsNullOrWhiteSpace(td.Color) ? et.Color : td.Color;
-            td.Axle = td.Axle == 0 ? et.Axle : td.Axle;
-            td.WheelBase = td.WheelBase == 0 ? et.WheelBase : td.WheelBase;
-            td.EmissionClass = td.EmissionClass == 0 ? et.EmissionClass : td.EmissionClass;
-
-            if (td.Dimentions != null && et.Dimentions != null)
-            {
-                td.Dimentions.Length = td.Dimentions.Length == 0 ? et.Dimentions.Length : td.Dimentions.Length;
-                td.Dimentions.Width = td.Dimentions.Width == 0 ? et.Dimentions.Width : td.Dimentions.Width;
-                td.Dimentions.Height = td.Dimentions.Height == 0 ? et.Dimentions.Height : td.Dimentions.Height;
-            }
-
-            var updatedEntity = Map(dto);
-            await _truckRepository.UpdateAsync(updatedEntity);
-
-            var updatedDto = await MapAsync(updatedEntity);
-            return new ServerResult<TruckDto>
-            {
-                Success = true,
-                Message = "Truck updated successfully",
-                ResponseCode = 200,
-                Data = updatedDto
-            };
         }
 
         public async Task<ServerResult<TruckDto>> DeleteAsync(string id)
         {
-            var objectId = new ObjectId(id);
-            await _truckRepository.DeleteAsync(objectId);
-
-            return new ServerResult<TruckDto>
+            try
             {
-                Success = true,
-                Message = "Truck deleted successfully",
-                ResponseCode = 200,
-                Data = null
-            };
+                var objectId = new ObjectId(id);
+                await _truckRepository.DeleteAsync(objectId);
+
+                return new ServerResult<TruckDto>
+                {
+                    Success = true,
+                    Message = "Truck deleted successfully",
+                    ResponseCode = 200,
+                    Data = null
+                };
+            }
+            catch (InvalidOperationException ex)
+            {
+                return new ServerResult<TruckDto>
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    ResponseCode = 404,
+                    Data = null
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServerResult<TruckDto>
+                {
+                    Success = false,
+                    Message = $"Unexpected error: {ex.Message}",
+                    ResponseCode = 500,
+                    Data = null
+                };
+            }
         }
 
         private async Task<TruckDto> MapAsync(Truck item)
