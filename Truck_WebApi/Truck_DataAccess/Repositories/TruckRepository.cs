@@ -20,7 +20,7 @@ namespace Truck_DataAccess.Repositories
             await _collection.InsertOneAsync(item);
         }
 
-        public async Task<Truck?> GetAsync(string id)
+        public async Task<Truck?> GetByIdAsync(string id)
         {
             var objectId = new ObjectId(id);
 

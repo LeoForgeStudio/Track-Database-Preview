@@ -31,7 +31,7 @@ namespace Truck_DataAccess.Repositories
             var result = _collection.DeleteOneAsync(filter);
         }
 
-        public async Task<Gearbox?> GetAsync(string id)
+        public async Task<Gearbox?> GetByIdAsync(string id)
         {
             var objectId = new ObjectId(id);
 

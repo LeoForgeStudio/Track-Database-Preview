@@ -31,7 +31,7 @@ namespace Truck_DataAccess.Repositories
             var result = _collection.DeleteOneAsync(filter);
         }
 
-        public async Task<Engine?> GetAsync(string id)
+        public async Task<Engine?> GetByIdAsync(string id)
         {
             var objectId = new ObjectId(id);
 

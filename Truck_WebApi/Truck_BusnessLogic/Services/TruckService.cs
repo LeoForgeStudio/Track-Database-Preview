@@ -26,11 +26,73 @@ namespace Truck_BusnessLogic.Services
             _engineRepository = engineRepository;
             _manufacturerRepository = manufacturerRepository;
         }
+        public async Task<ServerResult<TruckDto>> CreateAsync(TruckDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Model) ||
+                string.IsNullOrWhiteSpace(dto.Manufacturer) ||
+                dto.TechnicalData == null ||
+                string.IsNullOrWhiteSpace(dto.TechnicalData.Engine) ||
+                string.IsNullOrWhiteSpace(dto.TechnicalData.Gearbox))
+            {
+                return new ServerResult<TruckDto>
+                {
+                    Success = false,
+                    Message = "Missing required fields",
+                    ResponseCode = 400,
+                    Data = null
+                };
+            }
+
+            var manufacturer = await _manufacturerRepository.GetByIdAsync(dto.Manufacturer);
+            var engine = await _engineRepository.GetByIdAsync(dto.TechnicalData.Engine);
+            var gearbox = await _gearboxRepository.GetByIdAsync(dto.TechnicalData.Gearbox);
+
+            if (manufacturer == null || engine == null || gearbox == null)
+            {
+                return new ServerResult<TruckDto>
+                {
+                    Success = false,
+                    Message = "Manufacturer, engine or gearbox not found",
+                    ResponseCode = 404,
+                    Data = null
+                };
+            }
+
+            var trucks = await _truckRepository.GetListAsync();
+            var existing = trucks.FirstOrDefault(x =>
+                x.Model == dto.Model &&
+                x.Manufacturer == manufacturer.Id.ToString() &&
+                x.TechnicalData.Engine == engine.Id.ToString() &&
+                x.TechnicalData.Gearbox == gearbox.Id.ToString());
+
+            if (existing != null)
+            {
+                return new ServerResult<TruckDto>
+                {
+                    Success = false,
+                    Message = "Truck already exists",
+                    ResponseCode = 409,
+                    Data = null
+                };
+            }
+
+            var entity = Map(dto);
+            await _truckRepository.CreateAsync(entity);
+            var createdDto = await MapAsync(entity);
+
+            return new ServerResult<TruckDto>
+            {
+                Success = true,
+                Message = "Truck created successfully",
+                ResponseCode = 201,
+                Data = createdDto
+            };
+        }
 
         public async Task<ServerResult<TruckDto>> GetByIdAsync(string id)
         {
             
-            var result = await _truckRepository.GetAsync(id);
+            var result = await _truckRepository.GetByIdAsync(id);
             if (result == null)
             {
                 return new ServerResult<TruckDto?>
@@ -71,10 +133,82 @@ namespace Truck_BusnessLogic.Services
             return result;
         }
 
+        public async Task<ServerResult<TruckDto>> UpdateAsync(string id, TruckDto dto)
+        {
+            var entity = await _truckRepository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                return new ServerResult<TruckDto>
+                {
+                    Success = false,
+                    Message = "Truck not found",
+                    ResponseCode = 404,
+                    Data = null
+                };
+            }
+
+            dto.Id = entity.Id.ToString();
+            dto.Model = string.IsNullOrWhiteSpace(dto.Model) ? entity.Model : dto.Model;
+            dto.Manufacturer = string.IsNullOrWhiteSpace(dto.Manufacturer) ? entity.Manufacturer : dto.Manufacturer;
+            if (dto.ConstructDate != default && dto.ConstructDate != entity.ConstructDate)
+            {
+                entity.ConstructDate = dto.ConstructDate;
+            }
+            dto.Condition = dto.Condition == 0 ? entity.Condition : dto.Condition;
+            dto.Price = dto.Price == 0 ? entity.Price : dto.Price;
+            dto.Location = string.IsNullOrWhiteSpace(dto.Location) ? entity.Location : dto.Location;
+            dto.Description = string.IsNullOrWhiteSpace(dto.Description) ? entity.Description : dto.Description;
+
+            var td = dto.TechnicalData;
+            var et = entity.TechnicalData;
+
+            td.Engine = string.IsNullOrWhiteSpace(td.Engine) ? et.Engine : td.Engine;
+            td.Gearbox = string.IsNullOrWhiteSpace(td.Gearbox) ? et.Gearbox : td.Gearbox;
+            td.Weight = td.Weight == 0 ? et.Weight : td.Weight;
+            td.FuelType = td.FuelType == 0 ? et.FuelType : td.FuelType;
+            td.Color = string.IsNullOrWhiteSpace(td.Color) ? et.Color : td.Color;
+            td.Axle = td.Axle == 0 ? et.Axle : td.Axle;
+            td.WheelBase = td.WheelBase == 0 ? et.WheelBase : td.WheelBase;
+            td.EmissionClass = td.EmissionClass == 0 ? et.EmissionClass : td.EmissionClass;
+
+            if (td.Dimentions != null && et.Dimentions != null)
+            {
+                td.Dimentions.Length = td.Dimentions.Length == 0 ? et.Dimentions.Length : td.Dimentions.Length;
+                td.Dimentions.Width = td.Dimentions.Width == 0 ? et.Dimentions.Width : td.Dimentions.Width;
+                td.Dimentions.Height = td.Dimentions.Height == 0 ? et.Dimentions.Height : td.Dimentions.Height;
+            }
+
+            var updatedEntity = Map(dto);
+            await _truckRepository.UpdateAsync(updatedEntity);
+
+            var updatedDto = await MapAsync(updatedEntity);
+            return new ServerResult<TruckDto>
+            {
+                Success = true,
+                Message = "Truck updated successfully",
+                ResponseCode = 200,
+                Data = updatedDto
+            };
+        }
+
+        public async Task<ServerResult<TruckDto>> DeleteAsync(string id)
+        {
+            var objectId = new ObjectId(id);
+            await _truckRepository.DeleteAsync(objectId);
+
+            return new ServerResult<TruckDto>
+            {
+                Success = true,
+                Message = "Truck deleted successfully",
+                ResponseCode = 200,
+                Data = null
+            };
+        }
+
         private async Task<TruckDto> MapAsync(Truck item)
         {
-            var engine = await _engineRepository.GetAsync(item.TechnicalData.Engine);
-            var gearbox = await _gearboxRepository.GetAsync(item.TechnicalData.Gearbox);
+            var engine = await _engineRepository.GetByIdAsync(item.TechnicalData.Engine);
+            var gearbox = await _gearboxRepository.GetByIdAsync(item.TechnicalData.Gearbox);
 
             return new TruckDto
             {
@@ -84,22 +218,8 @@ namespace Truck_BusnessLogic.Services
                 Condition = item.Condition,
                 TechnicalData = new TechnicalDataDto
                 {
-                    Engine = new EngineDto
-                    {
-                        Id = engine.Id.ToString(),
-                        Model = engine.Model,
-                        Cilinders = engine.Cilinders,
-                        Power = engine.Power
-                    },
-                    Gearbox = new GearboxDto
-                    {
-                        Id = gearbox.Id.ToString(),
-                        Model = gearbox.Model,
-                        Ratio = gearbox.Ratio,
-                        MaxSpeed = gearbox.MaxSpeed,
-                        MaxTemp = gearbox.MaxTemp,
-                        MaxTorque = gearbox.MaxTorque
-                    },
+                    Engine = item.TechnicalData.Engine,
+                    Gearbox = item.TechnicalData.Gearbox,
                     Weight = item.TechnicalData.Weight,
                     FuelType = item.TechnicalData.FuelType,
                     Color = item.TechnicalData.Color,
@@ -119,7 +239,6 @@ namespace Truck_BusnessLogic.Services
             };
         }
 
-
         private Truck Map(TruckDto item)
         {
             return new Truck
@@ -130,25 +249,21 @@ namespace Truck_BusnessLogic.Services
                 Condition = item.Condition,
                 TechnicalData = new TechnicalData
                 {
-                    Engine = item.TechnicalData.Engine.Id,
-                    Gearbox = item.TechnicalData.Gearbox.Id,
+                    Engine = item.TechnicalData.Engine,
+                    Gearbox = item.TechnicalData.Gearbox,
                     Weight = item.TechnicalData.Weight,
                     FuelType = item.TechnicalData.FuelType,
                     Color = item.TechnicalData.Color,
                     Axle = item.TechnicalData.Axle,
-                    Dimentions = new DimentionsDto
-                    {
-                        Length = item.TechnicalData.Dimentions.Length,
-                        Height = item.TechnicalData.Dimentions.Height,
-                        Width = item.TechnicalData.Dimentions.Width
-                    },
+                    Dimentions = item.TechnicalData.Dimentions,
                     WheelBase = item.TechnicalData.WheelBase,
-                    EmissionClass = item.TechnicalData.EmissionClass,
+                    EmissionClass = item.TechnicalData.EmissionClass
                 },
                 Price = item.Price,
                 Location = item.Location,
                 Description = item.Description
             };
         }
+
     }
 }

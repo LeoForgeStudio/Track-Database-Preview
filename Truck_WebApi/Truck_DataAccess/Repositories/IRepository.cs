@@ -11,7 +11,7 @@ namespace Truck_DataAccess.Repositories
     public interface IRepository<TEntity, Tfilter>
     {
         Task CreateAsync(TEntity item);
-        Task<TEntity?> GetAsync(string id);
+        Task<TEntity?> GetByIdAsync(string id);
         Task<List<TEntity>> GetListAsync();
         Task<List<TEntity>> GetListAsync(Tfilter args);
         Task UpdateAsync(TEntity item);
