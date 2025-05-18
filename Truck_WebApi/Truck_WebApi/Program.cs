@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using System.Reflection;
 using Truck_BusnessLogic.Services;
 using Truck_DataAccess.Entities;
 using Truck_DataAccess.Repositories;
@@ -20,7 +21,7 @@ namespace Truck_WebApi
             {
                 return new MongoClient(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-            
+
             builder.Services.AddScoped<IRepository<Truck, TruckFilter>, TruckRepository>();
             builder.Services.AddScoped<IRepository<Gearbox, GearboxFilter>, GearboxRepository>();
             builder.Services.AddScoped<IRepository<Engine, EngineFilter>, EngineRepository>();
@@ -30,25 +31,39 @@ namespace Truck_WebApi
             builder.Services.AddTransient<ITruckService, TruckService>();
             builder.Services.AddTransient<IUserService, UserService>();
 
+            
+            builder.Services.AddTransient<IEngineService, EngineService>();
+            builder.Services.AddTransient<IGearboxService, GearboxService>();
+            builder.Services.AddTransient<IManufacturerService, ManufacturerService>();
+
+
             builder.Services.AddAuthentication("BaseAuth")
                 .AddScheme<AuthenticationSchemeOptions, DummyAuthHandler>("BaseAuth", null);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Truck Api",
                     Version = "v1",
-                    Description = "Truck database entity Crud metods",
+                    Description = "Truck database entity CRUD methods.<br/> How to use: <br/>1. First create user in MongoDB.<br/>2. Login through Autorize with the created user.",
                     Contact = new OpenApiContact
                     {
                         Name = "Liutauras Cicinskas",
                         Email = "twinpiligrim@gmail.com",
-                    }
+                    },
                 });
+
+
+                options.IncludeXmlComments(xmlPath);
+
                 options.AddSecurityDefinition("basic", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",

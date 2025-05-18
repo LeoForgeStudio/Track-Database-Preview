@@ -19,11 +19,6 @@ namespace Truck_DataAccess.Repositories
             await _collection.InsertOneAsync(item);
         }
 
-        public async Task DeleteAsync(ObjectId id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Manufacturer?> GetByIdAsync(string id)
         {
             var objectId = new ObjectId(id);
@@ -54,12 +49,26 @@ namespace Truck_DataAccess.Repositories
 
         public async Task UpdateAsync(Manufacturer item)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Manufacturer>
+                .Filter
+                .Eq(item => item.Id, item.Id);
+            var result = await _collection.FindOneAndReplaceAsync(filter, item);
         }
 
         Task<List<Manufacturer>> IRepository<Manufacturer, ManufacturerFilter>.GetListAsync(ManufacturerFilter args)
         {
             throw new NotImplementedException();
+        }
+        public async Task DeleteAsync(ObjectId id)
+        {
+            var filter = Builders<Manufacturer>
+                .Filter
+                .Eq(item => item.Id, id);
+            var result = await _collection.DeleteOneAsync(filter);
+            if (result.DeletedCount == 0)
+            {
+                throw new InvalidOperationException("Truck not found or already deleted.");
+            }
         }
     }
 }

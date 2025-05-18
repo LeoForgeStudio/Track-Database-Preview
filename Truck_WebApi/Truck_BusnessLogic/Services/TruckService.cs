@@ -282,7 +282,7 @@ namespace Truck_BusnessLogic.Services
         {
             return new Truck
             {
-                Id = new ObjectId(item.Id),
+                Id = string.IsNullOrWhiteSpace(item.Id) ? ObjectId.Empty : new ObjectId(item.Id),
                 Model = item.Model,
                 Manufacturer = item.Manufacturer,
                 Condition = item.Condition,

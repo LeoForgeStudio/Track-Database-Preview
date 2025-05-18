@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Truck_BusnessLogic.Services;
 using Truck_Shared.Dto;
 using Truck_Shared.Entities;
@@ -8,83 +7,84 @@ namespace Truck_WebApi.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-
-    public class TruckController : Controller
+    public class GearboxController : Controller
     {
-        private readonly ITruckService _service;
+        private readonly IGearboxService _service;
 
-        public TruckController(ITruckService service)
+        public GearboxController(IGearboxService service)
         {
             _service = service;
         }
 
         /// <summary>
-        /// Create new Truck entity entry
+        /// Create new Gearbox entity
         /// </summary>
         /// <param name="id"></param>>
         /// <returns>
         /// CustomerDto if entity is found
         /// </returns>
         [HttpPost]
-        public async Task<ActionResult<ServerResult<TruckDto>>> CreateAsync(TruckDto item)
+        public async Task<ActionResult<ServerResult<GearboxDto>>> CreateAsync(GearboxDto item)
         {
             var result = await _service.CreateAsync(item);
             return StatusCode(result.ResponseCode, result);
         }
 
         /// <summary>
-        /// Search for Truck entity by provided ID
+        /// Get gearbox entity by ID
         /// </summary>
         /// <param name="id"></param>>
         /// <returns>
         /// CustomerDto if entity is found
         /// </returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServerResult<TruckDto?>>> GetByIdAsync(string id)
+        public async Task<ActionResult<ServerResult<GearboxDto?>>> GetByIdAsync(string id)
         {
             var result = await _service.GetByIdAsync(id);
             return StatusCode(result.ResponseCode, result);
         }
 
         /// <summary>
-        /// Get all Truck entity list
+        /// Get list of gearbox entities
         /// </summary>
         /// <param name="id"></param>>
         /// <returns>
         /// CustomerDto if entity is found
         /// </returns>
         [HttpGet]
-        public async Task<ActionResult<ServerResult<List<TruckDto>>>> GetListAsync()
+        public async Task<ActionResult<ServerResult<List<GearboxDto>>>> GetListAsync()
         {
             var result = await _service.GetListAsync();
             return StatusCode(result.ResponseCode, result);
         }
 
+        
+
         /// <summary>
-        /// Update existing Truck entity entry
+        /// Update gearbox entity by ID
         /// </summary>
         /// <param name="id"></param>>
         /// <returns>
         /// CustomerDto if entity is found
         /// </returns>
         [HttpPut("{id}")]
-        public async Task<ActionResult<ServerResult<TruckDto>>> UpdateAsync(
+        public async Task<ActionResult<ServerResult<GearboxDto>>> UpdateAsync(
             [FromRoute] string id,
-            [FromBody] TruckDto dto)
+            [FromBody] GearboxDto dto)
         {
             var result = await _service.UpdateAsync(id, dto);
             return StatusCode(result.ResponseCode, result);
         }
 
         /// <summary>
-        /// Delete existing Truck entity entry
+        /// Delete gearbox  entity by  ID
         /// </summary>
         /// <param name="id"></param>>
         /// <returns>
         /// CustomerDto if entity is found
         /// </returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServerResult<TruckDto>>> DeleteAsync(string id)
+        public async Task<ActionResult<ServerResult<GearboxDto>>> DeleteAsync(string id)
         {
             var result = await _service.DeleteAsync(id);
             return StatusCode(result.ResponseCode, result);
