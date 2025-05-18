@@ -24,14 +24,32 @@ namespace Truck_DataAccess.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Manufacturer?> GetAsync(string id)
+        public async Task<Manufacturer?> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var objectId = new ObjectId(id);
+
+            var filter = Builders<Manufacturer>
+                .Filter
+                .Eq(item => item.Id, objectId);
+            var cursor = await _collection.FindAsync(filter);
+            var result = await cursor.ToListAsync();
+
+            if (result != null && result.Count > 0)
+            {
+                return result[0];
+            }
+
+            return null;
         }
 
         public async Task<List<Manufacturer>> GetListAsync()
         {
-            throw new NotImplementedException();
+            var filter = Builders<Manufacturer>
+                .Filter
+                .Empty;
+            var cursor = await _collection.FindAsync(filter);
+
+            return await cursor.ToListAsync();
         }
 
         public async Task UpdateAsync(Manufacturer item)

@@ -8,7 +8,7 @@ namespace Truck_WebApi.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    
+
     public class TruckController : Controller
     {
         private readonly ITruckService _service;
@@ -19,7 +19,6 @@ namespace Truck_WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-
         public async Task<ActionResult<ServerResult<TruckDto?>>> GetByIdAsync(string id)
         {
             var result = await _service.GetByIdAsync(id);
@@ -30,6 +29,29 @@ namespace Truck_WebApi.Controllers
         public async Task<ActionResult<ServerResult<List<TruckDto>>>> GetListAsync()
         {
             var result = await _service.GetListAsync();
+            return StatusCode(result.ResponseCode, result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ServerResult<TruckDto>>> CreateAsync(TruckDto item)
+        {
+            var result = await _service.CreateAsync(item);
+            return StatusCode(result.ResponseCode, result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ServerResult<TruckDto>>> UpdateAsync(
+            [FromRoute] string id,
+            [FromBody] TruckDto dto)
+        {
+            var result = await _service.UpdateAsync(id, dto);
+            return StatusCode(result.ResponseCode, result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ServerResult<TruckDto>>> DeleteAsync(string id)
+        {
+            var result = await _service.DeleteAsync(id);
             return StatusCode(result.ResponseCode, result);
         }
     }

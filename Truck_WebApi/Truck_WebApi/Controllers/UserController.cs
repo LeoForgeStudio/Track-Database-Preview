@@ -22,6 +22,5 @@ namespace Truck_WebApi.Controllers
             var result = await _service.CreateAsync(user);
             return StatusCode(result.ResponseCode, result);
         }
-        
     }
 }
