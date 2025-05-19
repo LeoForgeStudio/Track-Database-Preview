@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Truck_BusnessLogic.Services;
 using Truck_DataAccess.Entities;
 using Truck_DataAccess.Repositories;
 using Truck_Shared.Dto;
@@ -15,52 +16,20 @@ namespace Truck_ConsoleApp
             var EngineRepository = new EngineRepository(mongoClient);
             var GearboxRepository = new GearboxRepository(mongoClient);
             var ManufacturerRepository = new ManufacturerRepository(mongoClient);
-            /*
-            var newItem = new Truck
-            {
-                Manufacturer = "asdds",
-                Model = "Actros",
-                ConstructDate = new DateOnly(2020, 5, 14),
-                Condition = Condition.Used,
-                TechnicalData = new TechnicalData
-                {
-                    Engine = new Engine
-                    {
-                        Model = "LM-056",
-                        Cilinders = 6,
-                        Power = 330,
-                        MaxTorque = 5,
-                    },
-                    Gearbox = new Gearbox
-                    {
-                        Model = "OP-650",
-                        Ratio = "14.6,12.7,10,9,8,6,5,3,2,1",
-                        MaxTorque = 3000,
-                        MaxSpeed = 110,
-                        MaxTemp = 110,
-                    },
-                    Weight = 3852,
-                    FuelType = FuelType.Diesel,
-                    Color = "White",
-                    Axle = 4,
-                    Dimentions = new Dimentions
-                    {
-                        Length = 5,
-                        Height = 5,
-                        Width = 5,
-                    },
-                    WheelBase = 3850,
-                    EmissionClass = EmissionClass.Euro6
-                },
-                Price = 170000,
-                Location = "Vilnius",
-                Description = "MB Actros 2020"
-            };
-            
-            await repository.CreateAsync(newItem);
 
-            await repository.GetAsync(newItem.Id.ToString());
-            */
+            var userRepository = new UserRepository(mongoClient);
+            var userService = new UserService(userRepository);
+
+            var newUser = new UserDto
+            {
+                UserName = "admin",
+                Password = "admin",
+                RegDate = DateTime.Now,
+                Email = "admin@admin.com"
+            };
+
+            await userService.CreateAsync(newUser);
+
             var newEngine = new Engine
             {
                 Model = "OB-650",

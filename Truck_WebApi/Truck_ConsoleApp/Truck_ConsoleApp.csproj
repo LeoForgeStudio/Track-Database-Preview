@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Truck_BusnessLogic\Truck_BusnessLogic.csproj" />
     <ProjectReference Include="..\Truck_DataAccess\Truck_DataAccess.csproj" />
   </ItemGroup>
 

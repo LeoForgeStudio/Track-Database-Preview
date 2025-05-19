@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Truck_Shared", "Truck_Share
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Truck_ConsoleApp", "Truck_ConsoleApp\Truck_ConsoleApp.csproj", "{B04F493C-32AB-4FD2-BBD4-DB0CB39D496D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruckService_Tests", "TruckService_Tests\TruckService_Tests.csproj", "{3F7EFDA8-AB1A-4134-A0B8-F63D45D90BE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{B04F493C-32AB-4FD2-BBD4-DB0CB39D496D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B04F493C-32AB-4FD2-BBD4-DB0CB39D496D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B04F493C-32AB-4FD2-BBD4-DB0CB39D496D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F7EFDA8-AB1A-4134-A0B8-F63D45D90BE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F7EFDA8-AB1A-4134-A0B8-F63D45D90BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F7EFDA8-AB1A-4134-A0B8-F63D45D90BE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F7EFDA8-AB1A-4134-A0B8-F63D45D90BE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
