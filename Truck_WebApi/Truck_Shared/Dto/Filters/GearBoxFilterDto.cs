@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Truck_DataAccess.Entities
+namespace Truck_Shared.Dto.Filters
 {
-    public class GearboxFilter
+    public class GearBoxFilterDto
     {
+        public string? Model { get; set; }
         public int? MaxTorque { get; set; }
         public int? MaxSpeed { get; set; }
         public int? MaxTemp { get; set; }

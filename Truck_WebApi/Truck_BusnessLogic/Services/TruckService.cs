@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson;
 using Truck_DataAccess.Entities;
+using Truck_DataAccess.Entities.Filters;
 using Truck_DataAccess.Repositories;
 using Truck_Shared.Dto;
+using Truck_Shared.Dto.Filters;
 using Truck_Shared.Entities;
 using Truck_Shared.Enums;
 
@@ -131,6 +133,44 @@ namespace Truck_BusnessLogic.Services
                 result.Data = new List<TruckDto>();
             }
             return result;
+        }
+
+        public async Task<ServerResult<List<TruckDto?>>> GetListAsync(TruckFilterDto item)
+        {
+            var filter = new TruckFilter
+            {
+                Model = item.Model,
+                Manufacturer = item.Manufacturer,
+                ConstructFrom = item.ConstructFrom,
+                ConstructTo = item.ConstructTo,
+                Condition = item.Condition,
+                PriceFrom = item.PriceFrom,
+                PriceTo = item.PriceTo,
+                Location = item.Location,
+            };
+
+            var data = await _truckRepository.GetListAsync(filter);
+
+            if (data == null || data.Count == 0)
+            {
+                return new ServerResult<List<TruckDto?>>
+                {
+                    Success = false,
+                    Message = "No trucks found",
+                    ResponseCode = 404,
+                    Data = new List<TruckDto?>()
+                };
+            }
+
+            var dtoList = await Task.WhenAll(data.Select(MapAsync));
+
+            return new ServerResult<List<TruckDto?>>
+            {
+                Success = true,
+                Message = "Trucks retrieved successfully",
+                ResponseCode = 200,
+                Data = dtoList.ToList()
+            };
         }
 
         public async Task<ServerResult<TruckDto>> UpdateAsync(string id, TruckDto item)

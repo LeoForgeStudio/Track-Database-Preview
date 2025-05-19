@@ -11,7 +11,6 @@ namespace Truck_WebApi.Controllers
     {
         private readonly IManufacturerService _service;
 
-
         public ManufacturerController(IManufacturerService service)
         {
             _service = service;
@@ -58,8 +57,6 @@ namespace Truck_WebApi.Controllers
             var result = await _service.GetListAsync();
             return StatusCode(result.ResponseCode, result);
         }
-
-        
 
         /// <summary>
         /// Update manufacturer entity By ID 

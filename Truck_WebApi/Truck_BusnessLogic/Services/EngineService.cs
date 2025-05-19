@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Truck_DataAccess.Entities;
+using Truck_DataAccess.Entities.Filters;
 using Truck_DataAccess.Repositories;
 using Truck_Shared.Dto;
+using Truck_Shared.Dto.Filters;
 using Truck_Shared.Entities;
 
 namespace Truck_BusnessLogic.Services
@@ -107,6 +109,41 @@ namespace Truck_BusnessLogic.Services
 
             return result;
         }
+
+        public async Task<ServerResult<List<EngineDto>>> GetListAsync(EngineFilterDto item)
+        {
+            var filter = new EngineFilter
+            {
+                Model = item.Model,
+                Cilinders = item.Cilinders,
+                MaxPower  = item.MaxPower,
+                MaxTorque = item.MaxTorque
+            };
+
+            var data = await _engineRepository.GetListAsync(filter);
+
+            if (data == null || data.Count == 0)
+            {
+                return new ServerResult<List<EngineDto>>
+                {
+                    Success = false,
+                    Message = "No engines found",
+                    ResponseCode = 404,
+                    Data = new List<EngineDto>()
+                };
+            }
+
+            var dtoList = data.Select(Map).ToList();
+
+            return new ServerResult<List<EngineDto>>
+            {
+                Success = true,
+                Message = "Engines retrieved successfully",
+                ResponseCode = 200,
+                Data = dtoList
+            };
+        }
+
 
         public async Task<ServerResult<EngineDto>> UpdateAsync(string id, EngineDto item)
         {

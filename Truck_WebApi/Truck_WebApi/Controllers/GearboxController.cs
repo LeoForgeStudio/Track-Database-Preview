@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Truck_BusnessLogic.Services;
 using Truck_Shared.Dto;
+using Truck_Shared.Dto.Filters;
 using Truck_Shared.Entities;
 
 namespace Truck_WebApi.Controllers
@@ -58,7 +59,17 @@ namespace Truck_WebApi.Controllers
             return StatusCode(result.ResponseCode, result);
         }
 
-        
+        /// <summary>
+        /// Gets a filtered list of gearboxes based on provided GearboxFilterDto.
+        /// </summary>
+        /// <param name="filter">Filter with search criteria</param>
+        /// <returns>A list of GearboxDto wrapped in ServerResult</returns>
+        [HttpPost("filter")]
+        public async Task<ActionResult<ServerResult<List<GearboxDto>>>> GetListAsync([FromBody] GearBoxFilterDto filter)
+        {
+            var result = await _service.GetListAsync(filter);
+            return StatusCode(result.ResponseCode, result);
+        }
 
         /// <summary>
         /// Update gearbox entity by ID

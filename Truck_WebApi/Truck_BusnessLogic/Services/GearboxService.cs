@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson;
 using Truck_DataAccess.Entities;
+using Truck_DataAccess.Entities.Filters;
 using Truck_DataAccess.Repositories;
 using Truck_Shared.Dto;
+using Truck_Shared.Dto.Filters;
 using Truck_Shared.Entities;
 
 namespace Truck_BusnessLogic.Services
@@ -102,6 +104,41 @@ namespace Truck_BusnessLogic.Services
             }
 
             return result;
+        }
+
+        public async Task<ServerResult<List<GearboxDto>>> GetListAsync(GearBoxFilterDto item)
+        {
+            var filter = new GearboxFilter
+            {
+                Model = item.Model,
+                MaxTorque = item.MaxTorque,
+                MaxSpeed = item.MaxSpeed,
+                MaxTemp = item.MaxTemp,
+                
+            };
+
+            var data = await _gearboxRepository.GetListAsync(filter);
+
+            if (data == null || data.Count == 0)
+            {
+                return new ServerResult<List<GearboxDto>>
+                {
+                    Success = false,
+                    Message = "No gearboxes found",
+                    ResponseCode = 404,
+                    Data = new List<GearboxDto>()
+                };
+            }
+
+            var dtoList = data.Select(Map).ToList();
+
+            return new ServerResult<List<GearboxDto>>
+            {
+                Success = true,
+                Message = "Gearboxes retrieved successfully",
+                ResponseCode = 200,
+                Data = dtoList
+            };
         }
 
         public async Task<ServerResult<GearboxDto>> UpdateAsync(string id, GearboxDto item)

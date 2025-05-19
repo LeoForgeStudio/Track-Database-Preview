@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Truck_DataAccess.Entities;
+using Truck_DataAccess.Entities.Filters;
 
 namespace Truck_DataAccess.Repositories
 {
