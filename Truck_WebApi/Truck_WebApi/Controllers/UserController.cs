@@ -16,6 +16,13 @@ namespace Truck_WebApi.Controllers
             _service = service;
         }
 
+        /// <summary>
+        /// Register new user 
+        /// </summary>
+        /// <param name="id"></param>>
+        /// <returns>
+        /// CustomerDto if entity is found
+        /// </returns>
         [HttpPost]
         public async Task<ActionResult<ServerResult>> CreateAsync(UserDto user)
         {

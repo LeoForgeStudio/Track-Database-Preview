@@ -19,6 +19,13 @@ namespace Truck_WebApi.Controllers
             _userRepository = userRepository;
         }
 
+        /// <summary>
+        /// Login test
+        /// </summary>
+        /// <param name="id"></param>>
+        /// <returns>
+        /// CustomerDto if entity is found
+        /// </returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {

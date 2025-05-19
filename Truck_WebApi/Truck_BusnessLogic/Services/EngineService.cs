@@ -19,11 +19,23 @@ namespace Truck_BusnessLogic.Services
         {
             _engineRepository = engineRepository;
         }
-        public async Task<ServerResult<EngineDto>> CreateAsync(EngineDto dto)
+        public async Task<ServerResult<EngineDto>> CreateAsync(EngineDto item)
         {
-            var engine = await _engineRepository.GetListAsync();
-            var exist = engine.FirstOrDefault(e => e.Model == dto.Model);
-            if (exist == null)
+            if (string.IsNullOrWhiteSpace(item.Model))
+            {
+                return new ServerResult<EngineDto>
+                {
+                    Success = false,
+                    Message = "Model value is required",
+                    ResponseCode = 400,
+                    Data = null
+                };
+            }
+
+            var engines = await _engineRepository.GetListAsync();
+            var exist = engines.FirstOrDefault(e => e.Model == item.Model);
+
+            if (exist != null)
             {
                 return new ServerResult<EngineDto>
                 {
@@ -33,24 +45,21 @@ namespace Truck_BusnessLogic.Services
                     Data = null
                 };
             }
-            else
+
+            var entity = Map(item);
+            await _engineRepository.CreateAsync(entity);
+            var createdDto = Map(entity);
+
+            return new ServerResult<EngineDto>
             {
-                var entity = Map(dto);
-                await _engineRepository.CreateAsync(entity);
-                var createdDto =  Map(entity);
-
-                return new ServerResult<EngineDto>
-                {
-                    Success = true,
-                    Message = "Truck created successfully",
-                    ResponseCode = 201,
-                    Data = createdDto
-                };
-
-            }
-
-            
+                Success = true,
+                Message = "Engine created successfully",
+                ResponseCode = 201,
+                Data = createdDto
+            };
         }
+
+
         public async Task<ServerResult<EngineDto?>> GetByIdAsync(string id)
         {
             var result = await _engineRepository.GetByIdAsync(id);
@@ -187,6 +196,7 @@ namespace Truck_BusnessLogic.Services
         {
             return new EngineDto
             {
+                Id = item.Id.ToString(),
                 Model = item.Model,
                 Cilinders = item.Cilinders,
                 Power = item.Power,
@@ -198,6 +208,7 @@ namespace Truck_BusnessLogic.Services
         {
             return new Engine
             {
+                Id = string.IsNullOrWhiteSpace(item.Id) ? ObjectId.Empty : new ObjectId(item.Id),
                 Model = item.Model,
                 Cilinders = item.Cilinders,
                 Power = item.Power,

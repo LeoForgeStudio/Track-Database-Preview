@@ -15,10 +15,21 @@ namespace Truck_BusnessLogic.Services
             _gearboxRepository = gearboxRepository;
         }
 
-        public async Task<ServerResult<GearboxDto>> CreateAsync(GearboxDto dto)
+        public async Task<ServerResult<GearboxDto>> CreateAsync(GearboxDto item)
         {
+            if (string.IsNullOrWhiteSpace(item.Model))
+            {
+                return new ServerResult<GearboxDto>
+                {
+                    Success = false,
+                    Message = "Model value is required",
+                    ResponseCode = 400,
+                    Data = null
+                };
+            }
+
             var items = await _gearboxRepository.GetListAsync();
-            var exist = items.FirstOrDefault(g => g.Model == dto.Model);
+            var exist = items.FirstOrDefault(g => g.Model == item.Model);
 
             if (exist != null)
             {
@@ -31,7 +42,7 @@ namespace Truck_BusnessLogic.Services
                 };
             }
 
-            var entity = Map(dto);
+            var entity = Map(item);
             await _gearboxRepository.CreateAsync(entity);
             var createdDto = Map(entity);
 
@@ -43,6 +54,7 @@ namespace Truck_BusnessLogic.Services
                 Data = createdDto
             };
         }
+
 
         public async Task<ServerResult<GearboxDto?>> GetByIdAsync(string id)
         {
@@ -193,7 +205,7 @@ namespace Truck_BusnessLogic.Services
         {
             return new Gearbox
             {
-                Id = string.IsNullOrWhiteSpace(item.Id) ? null : ObjectId.Parse(item.Id),
+                Id = string.IsNullOrWhiteSpace(item.Id) ? ObjectId.Empty : new ObjectId(item.Id),
                 Model = item.Model,
                 Ratio = item.Ratio,
                 MaxTorque = item.MaxTorque,

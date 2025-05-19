@@ -7,6 +7,6 @@ namespace Truck_Shared.Dto
         [JsonPropertyOrder(0)]
         public string Id { get; set; }
         [JsonPropertyOrder(1)]
-        public string Model { get; set; }
+        public string? Model { get; set; }
     }
 }
