@@ -27,7 +27,7 @@ namespace Truck_WebApi.Controllers
         /// CustomerDto if entity is found
         /// </returns>
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        public async Task<IActionResult> Login([FromForm] LoginRequestDto request)
         {
             var user = await _userRepository.GetByUserNameAsync(request.Username);
             if (user == null)

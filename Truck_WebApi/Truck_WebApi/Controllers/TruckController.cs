@@ -67,7 +67,7 @@ namespace Truck_WebApi.Controllers
         /// <param name="filter">Filter with search criteria</param>
         /// <returns>A list of GearboxDto wrapped in ServerResult</returns>
         [HttpPost("filter")]
-        public async Task<ActionResult<ServerResult<List<TruckDto>>>> GetListAsync([FromBody] TruckFilterDto filter)
+        public async Task<ActionResult<ServerResult<List<TruckDto>>>> GetListAsync([FromForm] TruckFilterDto filter)
         {
             var result = await _service.GetListAsync(filter);
             return StatusCode(result.ResponseCode, result);

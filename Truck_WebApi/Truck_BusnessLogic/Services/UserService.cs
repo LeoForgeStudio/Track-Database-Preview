@@ -18,16 +18,40 @@ namespace Truck_BusnessLogic.Services
 
         public async Task<ServerResult> CreateAsync(UserDto newUser)
         {
-            User item = Map(newUser);
-            item.RegDate = DateTime.Now;
-            //   nepamirsti ideti patikrinimu
+            if (string.IsNullOrWhiteSpace(newUser.UserName) || string.IsNullOrWhiteSpace(newUser.Password))
+            {
+                return new ServerResult
+                {
+                    Success = false,
+                    ResponseCode = 400,
+                    Message = "Username and password are required"
+                };
+            }
 
+            var existingUser = await _repository.GetByUserNameAsync(newUser.UserName);
+            if (existingUser != null)
+            {
+                return new ServerResult
+                {
+                    Success = false,
+                    ResponseCode = 409,
+                    Message = "User with this username already exists"
+                };
+            }
+
+            var item = Map(newUser);
+            item.RegDate = DateTime.Now;
             item.PasswordSalt = PasswordHasher.GenerateSalt();
             item.PasswordHash = PasswordHasher.GenerateHash(newUser.Password, item.PasswordSalt);
 
             await _repository.CreateAsync(item);
 
-            return new ServerResult {Success = true, ResponseCode = 200};
+            return new ServerResult
+            {
+                Success = true,
+                ResponseCode = 200,
+                Message = "User created successfully"
+            };
         }
 
         private UserDto Map(User item)

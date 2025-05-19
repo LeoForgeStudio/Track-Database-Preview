@@ -51,7 +51,7 @@ namespace Truck_WebApi
                 {
                     Title = "Truck Api",
                     Version = "v1",
-                    Description = "Truck database entity CRUD methods.<br/> How to use: <br/>1. First create user in MongoDB.<br/>2. Launch Truck_ConsoleApp to create database entrys. <br/>3. Login through Autorize with the created user.",
+                    Description = "Truck database entity CRUD methods.<br/> How to use:<br/>1. Launch Truck_ConsoleApp to create database entrys. <br/>2. Log in through Authorize using the created user. <br/>2 Basic  LOGIN:admin PASS:admin",
                     Contact = new OpenApiContact
                     {
                         Name = "Liutauras Cicinskas",
