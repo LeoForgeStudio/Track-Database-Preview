@@ -1,4 +1,5 @@
 ﻿using Truck_Shared.Dto;
+using Truck_Shared.Dto.Filters;
 using Truck_Shared.Entities;
 
 namespace Truck_BusnessLogic.Services
@@ -8,6 +9,7 @@ namespace Truck_BusnessLogic.Services
         Task<ServerResult<EngineDto>> CreateAsync(EngineDto dto);
         Task<ServerResult<EngineDto?>> GetByIdAsync(string id);
         Task<ServerResult<List<EngineDto>>> GetListAsync();
+        Task<ServerResult<List<EngineDto>>> GetListAsync(EngineFilterDto item);
         Task<ServerResult<EngineDto>> UpdateAsync(string id, EngineDto item);
         Task<ServerResult<EngineDto>> DeleteAsync(string id);
         
