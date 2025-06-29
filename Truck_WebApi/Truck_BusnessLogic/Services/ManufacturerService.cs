@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ﻿using MongoDB.Bson;
 using Truck_DataAccess.Entities;
 using Truck_DataAccess.Repositories;
@@ -211,5 +212,17 @@ namespace Truck_BusnessLogic.Services
                 Name = item.Name
             };
         }
+=======
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Truck_BusnessLogic.Services
+{
+    internal class ManufacturerService
+    {
+>>>>>>> Stashed changes
     }
 }

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ﻿using Truck_Shared.Dto;
 using Truck_Shared.Entities;
 
@@ -11,5 +12,11 @@ namespace Truck_BusnessLogic.Services
         Task<ServerResult<ManufacturerDto>> UpdateAsync(string id, string name);
         Task<ServerResult<ManufacturerDto>> DeleteAsync(string id);
 
+=======
+﻿namespace Truck_BusnessLogic.Services
+{
+    public interface IManufacturerService
+    {
+>>>>>>> Stashed changes
     }
 }
